@@ -1,0 +1,26 @@
+{
+    "KPackageStructure": "Plasma/Applet",
+    "KPlugin": {
+        "Authors": [
+            {
+                "Name": "Efe Çiftci",
+                "Email": "efeciftci@gmail.com"
+            }
+        ],
+        "BugReportUrl": "https://github.com/efeciftci/plasma-yeelight/issues",
+        "Category": "System Information",
+        "Description": "Yeelight Control Plasmoid",
+        "EnabledByDefault": true,
+        "FormFactors": [
+            "desktop"
+        ],
+        "Icon": "redshift-status-on",
+        "Id": "com.efeciftci.yeelight",
+        "Name": "Yeelight Control",
+        "Version": "0.1",
+        "Website": "https://github.com/efeciftci/plasma-yeelight"
+    },
+    "X-Plasma-API-Minimum-Version": "6.0",
+    "X-Plasma-NotificationArea": "true",
+    "X-Plasma-NotificationAreaCategory": "Hardware"
+}
