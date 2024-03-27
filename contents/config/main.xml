@@ -4,12 +4,18 @@
       xsi:schemaLocation="http://www.kde.org/standards/kcfg/1.0
       http://www.kde.org/standards/kcfg/1.0/kcfg.xsd" >
   <kcfgfile name=""/>
-
+  
   <group name="General">
     <entry name="currentTab" type="String">
       <label>Currently shown tab (white, color)</label>
       <default>white</default>
     </entry>
   </group>
-
+  
+  <group name="Settings">
+    <entry name="ipAddress" type="String">
+      <default></default>
+    </entry>
+  </group>
+  
 </kcfg>
