@@ -7,7 +7,7 @@ include(KDEInstallDirs)
 include(KDECMakeSettings)
 include(KDECompilerSettings NO_POLICY_SCOPE)
 
-find_package(Qt6 REQUIRED COMPONENTS Core Qml)
+find_package(Qt6 REQUIRED COMPONENTS Core Qml Network)
 find_package(KF6 REQUIRED)
 find_package(Plasma 6.0 REQUIRED)
 
@@ -21,7 +21,7 @@ set(yeelightplugin_SRCS
 )
 
 add_library(yeelightplugin SHARED ${yeelightplugin_SRCS})
-target_link_libraries(yeelightplugin Qt::Core Qt::Qml)
+target_link_libraries(yeelightplugin Qt6::Core Qt6::Qml Qt6::Network)
 
 install(FILES plugin/qmldir DESTINATION ${KDE_INSTALL_QMLDIR}/com/efeciftci/yeelight)
 install(TARGETS yeelightplugin DESTINATION ${KDE_INSTALL_QMLDIR}/com/efeciftci/yeelight)

@@ -91,9 +91,11 @@ PlasmoidItem {
 					onCurrentIndexChanged: {
 						switch (currentIndex) {
 							case whiteTab.PlasmaComponents.TabBar.index:
+								bulb.execCmd('set_ct_abx', temperatureSlider.value)
 								Plasmoid.configuration.currentTab = 'white';
 								break;
 							case colorTab.PlasmaComponents.TabBar.index:
+								bulb.execCmd('set_rgb', rgbVal)
 								Plasmoid.configuration.currentTab = 'color';
 								break;
 						}
@@ -340,9 +342,13 @@ PlasmoidItem {
 				checked: true
 				text: i18n('Turned On')
 				onToggled: {
-					bulb.execCmd('set_power', this.checked)
+					bulb.execCmd('set_power', this.checked ? 'on' : 'off')
 				}
 			}
+		}
+		
+		Component.onCompleted: {
+			rgbVal = redSlider.value * 65536 + greenSlider.value * 256 + blueSlider.value
 		}
 	}
 }

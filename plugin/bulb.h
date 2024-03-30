@@ -1,6 +1,7 @@
 #pragma once
 #include <QDebug>
 #include <QObject>
+#include <QTcpSocket>
 
 class Bulb: public QObject {
 	Q_OBJECT
@@ -11,7 +12,7 @@ public:
 	~Bulb() override;
 	
 	QString ipAddress() const;
-	void setIpAddress(QString address);
+	void setIpAddress(const QString address);
 	
 	Q_INVOKABLE void execCmd(const QString method, const QString param);
 	
@@ -20,4 +21,5 @@ Q_SIGNALS:
 	
 private:
 	QString m_ipAddress;
+	QTcpSocket socket;
 };

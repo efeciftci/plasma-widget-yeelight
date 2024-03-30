@@ -16,8 +16,4 @@ kpackagetool6 -i . -t 'Plasma/Applet'
 ```
 
 ## Todo
-- [x] Initial GUI design
-- [ ] Configuration window
-- [ ] GUI improvements
-- [ ] Communication with a single bulb
-- [ ] Multiple bulb support / automatic bulb discovery
+- Multiple bulb support / automatic bulb discovery
