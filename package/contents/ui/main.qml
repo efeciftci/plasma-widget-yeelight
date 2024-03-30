@@ -52,6 +52,8 @@ PlasmoidItem {
 	Yeelight.Bulb {
 		id: bulb
 		ipAddress: Plasmoid.configuration.ipAddress
+		animType: Plasmoid.configuration.animSudden ? 'sudden' : 'smooth'
+		animDuration: Plasmoid.configuration.animDuration
 	}
 	
 	compactRepresentation: MouseArea {

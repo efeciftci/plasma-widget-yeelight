@@ -16,6 +16,12 @@
     <entry name="ipAddress" type="String">
       <default></default>
     </entry>
+    <entry name="animSudden" type="Bool">
+      <default>false</default>
+    </entry>
+    <entry name="animDuration" type="Int">
+      <default>500</default>
+    </entry>
   </group>
   
 </kcfg>

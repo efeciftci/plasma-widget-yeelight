@@ -19,20 +19,71 @@
 
 import QtQuick
 import QtQuick.Controls as QQC2
+import QtQuick.Layouts
 import org.kde.kirigami as Kirigami
 import org.kde.kcmutils as KCM
 
 KCM.SimpleKCM {
-    property alias cfg_ipAddress: ipaddr.text
+    property alias cfg_ipAddress: ipAddr.text
+    property alias cfg_animSudden: animSudden.checked
+    property alias cfg_animDuration: animDuration.value
+    
     Kirigami.FormLayout {
-        id: page
-        Kirigami.FormLayout {
+        ColumnLayout {
+            Kirigami.FormData.label: i18n('IP address:')
+            Kirigami.FormData.buddyFor: ipAddr
             QQC2.TextField {
-                id: ipaddr
-                Kirigami.FormData.label: i18n('IP address:')
+                id: ipAddr
             }
             QQC2.Label {
                 text: 'IP address of the bulb'
+            }
+        }
+        
+        Item {
+            Kirigami.FormData.isSection: true
+        }
+        
+        ColumnLayout {
+            Kirigami.FormData.label: i18n('Animation Type:')
+            Kirigami.FormData.buddyFor: animSudden
+            QQC2.RadioButton {
+                id: animSudden
+                checked: cfg_animSudden
+                text: i18n('Sudden')
+            }
+            QQC2.RadioButton {
+                id: animSmooth
+                checked: !cfg_animSudden
+                text: i18n('Smooth')
+            }
+        }
+        
+        Item {
+            Kirigami.FormData.isSection: true
+        }
+        
+        GridLayout {
+            Kirigami.FormData.label: i18n('Animation Duration:')
+            Kirigami.FormData.buddyFor: animDuration
+            columns: 3
+            QQC2.Slider {
+                id: animDuration
+                enabled: animSmooth.checked
+                Layout.columnSpan: 3
+                Layout.minimumWidth: ipAddr.width
+                from: 100
+                to: 2000
+                stepSize: 100
+            }
+            QQC2.Label {
+                text: i18n('Fast')
+            }
+            Item {
+                Layout.fillWidth: true
+            }
+            QQC2.Label {
+                text: i18n('Slow')
             }
         }
     }
