@@ -25,11 +25,13 @@ import org.kde.kirigami as Kirigami
 import org.kde.plasma.extras as PE
 import org.kde.plasma.components as PC
 import QtQuick.Templates as T
+import com.efeciftci.yeelight as Yeelight
 
 PlasmoidItem {
 	id: main
 	
 	property bool bulbOn: false
+	property int rgbVal: 0
 	
 	Plasmoid.icon: {
 		if (bulbOn) {
@@ -46,6 +48,11 @@ PlasmoidItem {
 		} else {
 			return i18n('Middle-click to toggle the bulb on')
 		}
+	}
+	
+	Yeelight.Bulb {
+		id: bulb
+		ipAddress: Plasmoid.configuration.ipAddress
 	}
 	
 	compactRepresentation: MouseArea {
@@ -136,6 +143,7 @@ PlasmoidItem {
 							value: 100
 							onValueChanged: {
 								colorBrightnessSlider.value = whiteBrightnessSlider.value
+								bulb.execCmd('set_bright', this.value)
 							}
 						}
 					}
@@ -160,6 +168,9 @@ PlasmoidItem {
 							to: 6500
 							stepSize: 100
 							value: 2700
+							onValueChanged: {
+								bulb.execCmd('set_ct_abx', this.value)
+							}
 						}
 					}
 				}
@@ -215,6 +226,10 @@ PlasmoidItem {
 							to: 255
 							stepSize: 1
 							value: 255
+							onValueChanged: {
+								rgbVal = redSlider.value * 65536 + greenSlider.value * 256 + blueSlider.value
+								bulb.execCmd('set_rgb', rgbVal)
+							}
 						}
 					}
 					
@@ -238,6 +253,10 @@ PlasmoidItem {
 							to: 255
 							stepSize: 1
 							value: 255
+							onValueChanged: {
+								rgbVal = redSlider.value * 65536 + greenSlider.value * 256 + blueSlider.value
+								bulb.execCmd('set_rgb', rgbVal)
+							}
 						}
 					}
 					
@@ -261,6 +280,10 @@ PlasmoidItem {
 							to: 255
 							stepSize: 1
 							value: 255
+							onValueChanged: {
+								rgbVal = redSlider.value * 65536 + greenSlider.value * 256 + blueSlider.value
+								bulb.execCmd('set_rgb', rgbVal)
+							}
 						}
 					}
 				}
@@ -276,6 +299,9 @@ PlasmoidItem {
 				
 				checked: true
 				text: i18n('Turned On')
+				onToggled: {
+					bulb.execCmd('set_power', this.checked)
+				}
 			}
 		}
 	}
