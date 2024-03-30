@@ -19,12 +19,11 @@
 
 import QtQuick
 import QtQuick.Layouts
-import org.kde.plasma.core as PC
 import org.kde.plasma.plasmoid
 import org.kde.kirigami as Kirigami
-import org.kde.plasma.extras as PE
-import org.kde.plasma.components as PC
-import QtQuick.Templates as T
+import org.kde.plasma.extras as PlasmaExtras
+import org.kde.plasma.components as PlasmaComponents
+import QtQuick.Templates as Templates
 import com.efeciftci.yeelight as Yeelight
 
 PlasmoidItem {
@@ -56,11 +55,10 @@ PlasmoidItem {
 	}
 	
 	compactRepresentation: MouseArea {
-		property bool wasExpanded: false
 		acceptedButtons: Qt.LeftButton | Qt.MiddleButton
 		onClicked: mouse => {
 			if (mouse.button == Qt.LeftButton) {
-				main.expanded = !wasExpanded
+				main.expanded = !main.expanded
 			} else if (mouse.button == Qt.MiddleButton) {
 				bulbOn = !bulbOn
 			}
@@ -72,11 +70,11 @@ PlasmoidItem {
 		}
 	}
 	
-	fullRepresentation: PE.Representation {
-		header: PE.PlasmoidHeading {
+	fullRepresentation: PlasmaExtras.Representation {
+		header: PlasmaExtras.PlasmoidHeading {
 			RowLayout {
 				anchors.fill: parent
-				PC.TabBar {
+				PlasmaComponents.TabBar {
 					id: tabBar
 					Layout.fillWidth: true
 					Layout.fillHeight: true
@@ -84,29 +82,29 @@ PlasmoidItem {
 					currentIndex: {
 						switch (Plasmoid.configuration.currentTab) {
 							case 'white':
-								return whiteTab.PC.TabBar.index;
+								return whiteTab.PlasmaComponents.TabBar.index;
 							case 'color':
-								return colorTab.PC.TabBar.index;
+								return colorTab.PlasmaComponents.TabBar.index;
 						}
 					}
 					
 					onCurrentIndexChanged: {
 						switch (currentIndex) {
-							case whiteTab.PC.TabBar.index:
+							case whiteTab.PlasmaComponents.TabBar.index:
 								Plasmoid.configuration.currentTab = 'white';
 								break;
-							case colorTab.PC.TabBar.index:
+							case colorTab.PlasmaComponents.TabBar.index:
 								Plasmoid.configuration.currentTab = 'color';
 								break;
 						}
 					}
 					
-					PC.TabButton {
+					PlasmaComponents.TabButton {
 						id: whiteTab
 						text: i18n('White')
 					}
 					
-					PC.TabButton {
+					PlasmaComponents.TabButton {
 						id: colorTab
 						text: i18n('Color')
 					}
@@ -114,185 +112,227 @@ PlasmoidItem {
 			}
 		}
 		
-		contentItem: T.StackView {
+		contentItem: Templates.StackView {
 			id: contentView
 			
-			PC.ScrollView {
+			ColumnLayout {
 				id: whiteView
-				visible: tabBar.currentIndex == whiteTab.PC.TabBar.index
-				ColumnLayout {
-					Column {
-						id: whiteBrightnessColumn
-						RowLayout {
-							PC.Label {
-								id: whiteBrightnessLabel
-								text: i18n('Brightness')
-							}
-							
-							PC.Label {
-								id: whiteBrightnessPercent
-								horizontalAlignment: Text.AlignRight
-								text: whiteBrightnessSlider.value + '%'
-							}
+				visible: tabBar.currentIndex == whiteTab.PlasmaComponents.TabBar.index
+				width: parent.width
+				
+				Column {
+					id: whiteBrightnessColumn
+					Layout.fillWidth: true
+					
+					RowLayout {
+						width: parent.width
+						
+						PlasmaComponents.Label {
+							id: whiteBrightnessLabel
+							Layout.fillWidth: true
+							text: i18n('Brightness')
 						}
-						PC.Slider {
-							id: whiteBrightnessSlider
-							from: 1
-							to: 100
-							stepSize: 1
-							value: 100
-							onValueChanged: {
-								colorBrightnessSlider.value = whiteBrightnessSlider.value
-								bulb.execCmd('set_bright', this.value)
-							}
+						
+						PlasmaComponents.Label {
+							id: whiteBrightnessPercent
+							horizontalAlignment: Text.AlignRight
+							text: whiteBrightnessSlider.value + '%'
 						}
 					}
 					
-					Column {
-						id: temperatureColumn
-						RowLayout {
-							PC.Label {
-								id: temperatureLabel
-								text: i18n('Temperature')
-							}
-							
-							PC.Label {
-								id: temperaturePercent
-								horizontalAlignment: Text.AlignRight
-								text: temperatureSlider.value + 'K'
-							}
+					PlasmaComponents.Slider {
+						id: whiteBrightnessSlider
+						width: parent.width
+						from: 1
+						to: 100
+						stepSize: 1
+						value: 100
+						onValueChanged: {
+							colorBrightnessSlider.value = whiteBrightnessSlider.value
+							bulb.execCmd('set_bright', this.value)
 						}
-						PC.Slider {
-							id: temperatureSlider
-							from: 1700
-							to: 6500
-							stepSize: 100
-							value: 2700
-							onValueChanged: {
-								bulb.execCmd('set_ct_abx', this.value)
-							}
+					}
+				}
+				
+				Column {
+					id: temperatureColumn
+					Layout.fillWidth: true
+					
+					RowLayout {
+						width: parent.width
+						
+						PlasmaComponents.Label {
+							id: temperatureLabel
+							Layout.fillWidth: true
+							text: i18n('Temperature')
+						}
+						
+						PlasmaComponents.Label {
+							id: temperaturePercent
+							horizontalAlignment: Text.AlignRight
+							text: temperatureSlider.value + 'K'
+						}
+					}
+					
+					PlasmaComponents.Slider {
+						id: temperatureSlider
+						width: parent.width
+						from: 1700
+						to: 6500
+						stepSize: 100
+						value: 2700
+						onValueChanged: {
+							bulb.execCmd('set_ct_abx', this.value)
 						}
 					}
 				}
 			}
 			
-			PC.ScrollView {
+			ColumnLayout {
 				id: colorView
-				visible: tabBar.currentIndex == colorTab.PC.TabBar.index
-				ColumnLayout {
-					Column {
-						id: colorBrightnessColumn
-						RowLayout {
-							PC.Label {
-								id: colorBrightnessLabel
-								text: i18n('Brightness')
-							}
-							
-							PC.Label {
-								id: colorBrightnessPercent
-								horizontalAlignment: Text.AlignRight
-								text: colorBrightnessSlider.value + '%'
-							}
+				visible: tabBar.currentIndex == colorTab.PlasmaComponents.TabBar.index
+				width: parent.width
+				
+				Column {
+					id: colorBrightnessColumn
+					Layout.fillWidth: true
+					
+					RowLayout {
+						width: parent.width
+						
+						PlasmaComponents.Label {
+							id: colorBrightnessLabel
+							Layout.fillWidth: true
+							text: i18n('Brightness')
 						}
-						PC.Slider {
-							id: colorBrightnessSlider
-							from: 1
-							to: 100
-							stepSize: 1
-							value: 100
-							onValueChanged: {
-								whiteBrightnessSlider.value = colorBrightnessSlider.value
-							}
+						
+						PlasmaComponents.Label {
+							id: colorBrightnessPercent
+							horizontalAlignment: Text.AlignRight
+							text: colorBrightnessSlider.value + '%'
 						}
 					}
 					
-					Column {
-						id: redColumn
-						RowLayout {
-							PC.Label {
-								id: redLabel
-								text: i18n('Red')
-							}
-							
-							PC.Label {
-								id: redPercent
-								horizontalAlignment: Text.AlignRight
-								text: redSlider.value
-							}
+					PlasmaComponents.Slider {
+						id: colorBrightnessSlider
+						width: parent.width
+						from: 1
+						to: 100
+						stepSize: 1
+						value: 100
+						onValueChanged: {
+							whiteBrightnessSlider.value = colorBrightnessSlider.value
 						}
-						PC.Slider {
-							id: redSlider
-							from: 0
-							to: 255
-							stepSize: 1
-							value: 255
-							onValueChanged: {
-								rgbVal = redSlider.value * 65536 + greenSlider.value * 256 + blueSlider.value
-								bulb.execCmd('set_rgb', rgbVal)
-							}
+					}
+				}
+				
+				Column {
+					id: redColumn
+					Layout.fillWidth: true
+					
+					RowLayout {
+						width: parent.width
+						
+						PlasmaComponents.Label {
+							id: redLabel
+							Layout.fillWidth: true
+							text: i18n('Red')
+						}
+						
+						PlasmaComponents.Label {
+							id: redPercent
+							horizontalAlignment: Text.AlignRight
+							text: redSlider.value
 						}
 					}
 					
-					Column {
-						id: greenColumn
-						RowLayout {
-							PC.Label {
-								id: greenLabel
-								text: i18n('Green')
-							}
-							
-							PC.Label {
-								id: greenPercent
-								horizontalAlignment: Text.AlignRight
-								text: greenSlider.value
-							}
+					PlasmaComponents.Slider {
+						id: redSlider
+						width: parent.width
+						from: 0
+						to: 255
+						stepSize: 1
+						value: 255
+						onValueChanged: {
+							rgbVal = redSlider.value * 65536 + greenSlider.value * 256 + blueSlider.value
+							bulb.execCmd('set_rgb', rgbVal)
 						}
-						PC.Slider {
-							id: greenSlider
-							from: 0
-							to: 255
-							stepSize: 1
-							value: 255
-							onValueChanged: {
-								rgbVal = redSlider.value * 65536 + greenSlider.value * 256 + blueSlider.value
-								bulb.execCmd('set_rgb', rgbVal)
-							}
+					}
+				}
+				
+				Column {
+					id: greenColumn
+					Layout.fillWidth: true
+					
+					RowLayout {
+						width: parent.width
+						
+						PlasmaComponents.Label {
+							id: greenLabel
+							Layout.fillWidth: true
+							text: i18n('Green')
+						}
+						
+						PlasmaComponents.Label {
+							id: greenPercent
+							horizontalAlignment: Text.AlignRight
+							text: greenSlider.value
 						}
 					}
 					
-					Column {
-						id: blueColumn
-						RowLayout {
-							PC.Label {
-								id: blueLabel
-								text: i18n('Blue')
-							}
-							
-							PC.Label {
-								id: bluePercent
-								horizontalAlignment: Text.AlignRight
-								text: blueSlider.value
-							}
+					PlasmaComponents.Slider {
+						id: greenSlider
+						width: parent.width
+						from: 0
+						to: 255
+						stepSize: 1
+						value: 255
+						onValueChanged: {
+							rgbVal = redSlider.value * 65536 + greenSlider.value * 256 + blueSlider.value
+							bulb.execCmd('set_rgb', rgbVal)
 						}
-						PC.Slider {
-							id: blueSlider
-							from: 0
-							to: 255
-							stepSize: 1
-							value: 255
-							onValueChanged: {
-								rgbVal = redSlider.value * 65536 + greenSlider.value * 256 + blueSlider.value
-								bulb.execCmd('set_rgb', rgbVal)
-							}
+					}
+				}
+				
+				Column {
+					id: blueColumn
+					Layout.fillWidth: true
+					
+					RowLayout {
+						width: parent.width
+						
+						PlasmaComponents.Label {
+							id: blueLabel
+							Layout.fillWidth: true
+							text: i18n('Blue')
+						}
+						
+						PlasmaComponents.Label {
+							id: bluePercent
+							horizontalAlignment: Text.AlignRight
+							text: blueSlider.value
+						}
+					}
+					
+					PlasmaComponents.Slider {
+						id: blueSlider
+						width: parent.width
+						from: 0
+						to: 255
+						stepSize: 1
+						value: 255
+						onValueChanged: {
+							rgbVal = redSlider.value * 65536 + greenSlider.value * 256 + blueSlider.value
+							bulb.execCmd('set_rgb', rgbVal)
 						}
 					}
 				}
 			}
 		}
 		
-		footer: PE.PlasmoidHeading {
+		footer: PlasmaExtras.PlasmoidHeading {
 			height: parent.header.height
-			PC.CheckBox {
+			PlasmaComponents.CheckBox {
 				id: onOffCheckBox
 				anchors.leftMargin: Kirigami.Units.smallSpacing
 				anchors.verticalCenter: parent.verticalCenter
