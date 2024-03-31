@@ -186,7 +186,8 @@ PlasmoidItem {
 						stepSize: 100
 						value: 2700
 						onValueChanged: {
-							bulb.execCmd('set_ct_abx', this.value)
+							if (Plasmoid.configuration.currentTab == 'white')
+								bulb.execCmd('set_ct_abx', this.value)
 						}
 					}
 				}
@@ -259,7 +260,8 @@ PlasmoidItem {
 						value: 255
 						onValueChanged: {
 							rgbVal = redSlider.value * 65536 + greenSlider.value * 256 + blueSlider.value
-							bulb.execCmd('set_rgb', rgbVal)
+							if (Plasmoid.configuration.currentTab == 'color')
+								bulb.execCmd('set_rgb', rgbVal)
 						}
 					}
 				}
@@ -293,7 +295,8 @@ PlasmoidItem {
 						value: 255
 						onValueChanged: {
 							rgbVal = redSlider.value * 65536 + greenSlider.value * 256 + blueSlider.value
-							bulb.execCmd('set_rgb', rgbVal)
+							if (Plasmoid.configuration.currentTab == 'color')
+								bulb.execCmd('set_rgb', rgbVal)
 						}
 					}
 				}
@@ -327,7 +330,8 @@ PlasmoidItem {
 						value: 255
 						onValueChanged: {
 							rgbVal = redSlider.value * 65536 + greenSlider.value * 256 + blueSlider.value
-							bulb.execCmd('set_rgb', rgbVal)
+							if (Plasmoid.configuration.currentTab == 'color')
+								bulb.execCmd('set_rgb', rgbVal)
 						}
 					}
 				}
@@ -350,7 +354,14 @@ PlasmoidItem {
 		}
 		
 		Component.onCompleted: {
-			rgbVal = redSlider.value * 65536 + greenSlider.value * 256 + blueSlider.value
+			var results = JSON.parse(bulb.fetchBulbState()).result
+			onOffCheckBox.checked = results[0] == 'on'
+			whiteBrightnessSlider.value = results[1]
+			Plasmoid.configuration.currentTab = results[2] == '1' ? 'color' : 'white'
+			temperatureSlider.value = results[3]
+			redSlider.value = Math.floor(results[4] / 65536)
+			greenSlider.value = Math.floor((results[4] % 65536) / 256)
+			blueSlider.value = results[4] % 256
 		}
 	}
 }

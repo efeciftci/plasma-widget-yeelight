@@ -55,3 +55,15 @@ void Bulb::execCmd(const QString method, const QString param) {
 	
 	socket.close();
 }
+
+QString Bulb::fetchBulbState() {
+	socket.connectToHost(m_ipAddress, 55443);
+	if (socket.waitForConnected()) {
+		QString msg = QString::fromUtf8("{\"id\":1,\"method\":\"get_prop\",\"params\":[\"power\",\"bright\",\"color_mode\",\"ct\",\"rgb\"]}\r\n");
+		socket.write(msg.toLocal8Bit());
+		if (socket.waitForReadyRead())
+			return QString::fromUtf8(socket.readAll());
+	}
+	
+	return QString::fromUtf8("{}");
+}

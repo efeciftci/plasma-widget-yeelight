@@ -23,6 +23,7 @@ public:
 	void setAnimDuration(const int animDuration);
 	
 	Q_INVOKABLE void execCmd(const QString method, const QString param);
+	Q_INVOKABLE QString fetchBulbState();
 	
 Q_SIGNALS:
 	void ipAddressChanged();
