@@ -50,6 +50,8 @@ void Bulb::execCmd(const QString method, const QString param) {
 		msg = QString::fromUtf8("{\"id\":1,\"method\":\"get_prop\",\"params\":[\"power\", \"bright\", \"ct\", \"rgb\", \"color_mode\"]}\r\n");
 	
 	socket.write(msg.toLocal8Bit());
+	socket.waitForBytesWritten();
+	socket.write(" ");
 	if (socket.waitForReadyRead())
 		QByteArray reply = socket.readAll();
 	
@@ -61,6 +63,8 @@ QString Bulb::fetchBulbState() {
 	if (socket.waitForConnected()) {
 		QString msg = QString::fromUtf8("{\"id\":1,\"method\":\"get_prop\",\"params\":[\"power\",\"bright\",\"color_mode\",\"ct\",\"rgb\"]}\r\n");
 		socket.write(msg.toLocal8Bit());
+		socket.waitForBytesWritten();
+		socket.write(" ");
 		if (socket.waitForReadyRead()) {
 			QString reply = QString::fromUtf8(socket.readAll());
 			socket.close();
