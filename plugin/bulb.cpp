@@ -61,8 +61,11 @@ QString Bulb::fetchBulbState() {
 	if (socket.waitForConnected()) {
 		QString msg = QString::fromUtf8("{\"id\":1,\"method\":\"get_prop\",\"params\":[\"power\",\"bright\",\"color_mode\",\"ct\",\"rgb\"]}\r\n");
 		socket.write(msg.toLocal8Bit());
-		if (socket.waitForReadyRead())
-			return QString::fromUtf8(socket.readAll());
+		if (socket.waitForReadyRead()) {
+			QString reply = QString::fromUtf8(socket.readAll());
+			socket.close();
+			return reply;
+		}
 	}
 	
 	return QString::fromUtf8("{}");
