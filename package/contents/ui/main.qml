@@ -19,11 +19,11 @@
 
 import QtQuick
 import QtQuick.Layouts
-import org.kde.plasma.plasmoid
-import org.kde.kirigami as Kirigami
-import org.kde.plasma.extras as PlasmaExtras
-import org.kde.plasma.components as PlasmaComponents
 import QtQuick.Templates as Templates
+import org.kde.kirigami as Kirigami
+import org.kde.plasma.components as PlasmaComponents
+import org.kde.plasma.extras as PlasmaExtras
+import org.kde.plasma.plasmoid
 import com.efeciftci.yeelight as Yeelight
 
 PlasmoidItem {
@@ -32,13 +32,7 @@ PlasmoidItem {
 	property bool bulbOn: false
 	property int rgbVal: 0
 	
-	Plasmoid.icon: {
-		if (bulbOn) {
-			return 'redshift-status-on'
-		} else {
-			return 'redshift-status-off'
-		}
-	}
+	Plasmoid.icon: bulbOn ? 'redshift-status-on' : 'redshift-status-off'
 	
 	toolTipMainText: i18n('Yeelight Control')
 	toolTipSubText: {
@@ -56,19 +50,24 @@ PlasmoidItem {
 		animDuration: Plasmoid.configuration.animDuration
 	}
 	
+	function toggleBulb() {
+		bulbOn = !bulbOn
+		bulb.execCmd('set_power', bulbOn ? 'on' : 'off')
+	}
+	
 	compactRepresentation: MouseArea {
 		acceptedButtons: Qt.LeftButton | Qt.MiddleButton
 		onClicked: mouse => {
 			if (mouse.button == Qt.LeftButton) {
 				main.expanded = !main.expanded
 			} else if (mouse.button == Qt.MiddleButton) {
-				bulbOn = !bulbOn
+				toggleBulb()
 			}
 		}
 		
 		Kirigami.Icon {
 			anchors.fill: parent
-			source: plasmoid.icon
+			source: Plasmoid.icon
 		}
 	}
 	
@@ -345,20 +344,21 @@ PlasmoidItem {
 				anchors.leftMargin: Kirigami.Units.smallSpacing
 				anchors.verticalCenter: parent.verticalCenter
 				
-				checked: true
 				text: i18n('Turned On')
-				onToggled: {
-					bulb.execCmd('set_power', this.checked ? 'on' : 'off')
-				}
+				checked: bulbOn
+				onToggled: toggleBulb()
 			}
 		}
 		
 		Component.onCompleted: {
 			var results = JSON.parse(bulb.fetchBulbState()).result
-			onOffCheckBox.checked = results[0] == 'on'
-			whiteBrightnessSlider.value = results[1]
+			
+			bulbOn = (results[0] == 'on')
 			Plasmoid.configuration.currentTab = results[2] == '1' ? 'color' : 'white'
+			
+			whiteBrightnessSlider.value = results[1]
 			temperatureSlider.value = results[3]
+			
 			redSlider.value = Math.floor(results[4] / 65536)
 			greenSlider.value = Math.floor((results[4] % 65536) / 256)
 			blueSlider.value = results[4] % 256
