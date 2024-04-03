@@ -1,19 +1,9 @@
-# plasma-yeelight
-Yeelight smart bulb control widget for KDE Plasma 6
+# plasma-widget-yeelight
+A KDE Plasma 6 widget for controlling Yeelight smart bulbs. "LAN Control" option of the bulb must be enabled from the Yeelight app.
 
-## Installation
-1. Clone the repository into a directory:
-```bash
-git clone https://github.com/efeciftci/plasma-yeelight.git
-```
-2. Enter repository directory:
-```bash
-cd plasma-yeelight
-```
-3. Install:
-```bash
-kpackagetool6 -i . -t 'Plasma/Applet'
-```
+![White Mode](https://efeciftci.com/assets/github/com.efeciftci.yeelight_0.png)
+![Color Mode](https://efeciftci.com/assets/github/com.efeciftci.yeelight_1.png)
+![Widget Configuration](https://efeciftci.com/assets/github/com.efeciftci.yeelight_2.png)
 
 ## Todo
 - Multiple bulb support / automatic bulb discovery
