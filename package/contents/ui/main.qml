@@ -350,7 +350,16 @@ PlasmoidItem {
 			}
 		}
 		
-		Component.onCompleted: {
+		Component.onCompleted: refreshUI()
+		
+		Timer {
+			interval: 5000
+			running: true
+			repeat: true
+			onTriggered: refreshUI()
+		}
+		
+		function refreshUI() {
 			var results = JSON.parse(bulb.fetchBulbState()).result
 			
 			bulbOn = (results[0] == 'on')
