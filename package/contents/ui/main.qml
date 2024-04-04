@@ -73,6 +73,8 @@ PlasmoidItem {
 	
 	fullRepresentation: PlasmaExtras.Representation {
 		header: PlasmaExtras.PlasmoidHeading {
+			enabled: bulbOn
+			
 			RowLayout {
 				anchors.fill: parent
 				PlasmaComponents.TabBar {
@@ -117,6 +119,7 @@ PlasmoidItem {
 		
 		contentItem: Templates.StackView {
 			id: contentView
+			enabled: bulbOn
 			
 			ColumnLayout {
 				id: whiteView
