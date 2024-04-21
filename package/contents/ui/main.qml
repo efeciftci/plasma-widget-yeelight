@@ -18,6 +18,7 @@
  */
 
 import QtQuick
+import QtQuick.Controls as QQC2
 import QtQuick.Layouts
 import QtQuick.Templates as Templates
 import org.kde.kirigami as Kirigami
@@ -74,6 +75,7 @@ PlasmoidItem {
 	fullRepresentation: PlasmaExtras.Representation {
 		header: PlasmaExtras.PlasmoidHeading {
 			enabled: bulbOn
+			visible: Plasmoid.configuration.ipAddress != ''
 			
 			RowLayout {
 				anchors.fill: parent
@@ -119,11 +121,11 @@ PlasmoidItem {
 		
 		contentItem: Templates.StackView {
 			id: contentView
-			enabled: bulbOn
+			enabled: bulbOn || Plasmoid.configuration.ipAddress == ''
 			
 			ColumnLayout {
 				id: whiteView
-				visible: tabBar.currentIndex == whiteTab.PlasmaComponents.TabBar.index
+				visible: tabBar.currentIndex == whiteTab.PlasmaComponents.TabBar.index && Plasmoid.configuration.ipAddress != ''
 				width: parent.width
 				
 				Column {
@@ -197,7 +199,7 @@ PlasmoidItem {
 			
 			ColumnLayout {
 				id: colorView
-				visible: tabBar.currentIndex == colorTab.PlasmaComponents.TabBar.index
+				visible: tabBar.currentIndex == colorTab.PlasmaComponents.TabBar.index && Plasmoid.configuration.ipAddress != ''
 				width: parent.width
 				
 				Column {
@@ -342,6 +344,8 @@ PlasmoidItem {
 		
 		footer: PlasmaExtras.PlasmoidHeading {
 			height: parent.header.height
+			visible: Plasmoid.configuration.ipAddress != ''
+			
 			PlasmaComponents.CheckBox {
 				id: onOffCheckBox
 				anchors.leftMargin: Kirigami.Units.smallSpacing
@@ -350,6 +354,20 @@ PlasmoidItem {
 				text: i18n('Turned On')
 				checked: bulbOn
 				onToggled: toggleBulb()
+			}
+		}
+		
+		PlasmaExtras.PlaceholderMessage {
+			id: noBulbsPlaceholder
+			anchors.centerIn: parent
+			width: parent.width - (Kirigami.Units.gridUnit * 4)
+			visible: Plasmoid.configuration.ipAddress == ''
+			text: i18n('No bulbs have been configured yet')
+			
+			helpfulAction: QQC2.Action {
+				text: i18n('Configure')
+				icon.name: "configure"
+				onTriggered: Plasmoid.internalAction("configure").trigger()
 			}
 		}
 		
@@ -363,17 +381,19 @@ PlasmoidItem {
 		}
 		
 		function refreshUI() {
-			var results = JSON.parse(bulb.fetchBulbState()).result
-			
-			bulbOn = (results[0] == 'on')
-			Plasmoid.configuration.currentTab = results[2] == '1' ? 'color' : 'white'
-			
-			whiteBrightnessSlider.value = results[1]
-			temperatureSlider.value = results[3]
-			
-			redSlider.value = Math.floor(results[4] / 65536)
-			greenSlider.value = Math.floor((results[4] % 65536) / 256)
-			blueSlider.value = results[4] % 256
+			if (Plasmoid.configuration.ipAddress != '') {
+				var results = JSON.parse(bulb.fetchBulbState()).result
+				
+				bulbOn = (results[0] == 'on')
+				Plasmoid.configuration.currentTab = results[2] == '1' ? 'color' : 'white'
+				
+				whiteBrightnessSlider.value = results[1]
+				temperatureSlider.value = results[3]
+				
+				redSlider.value = Math.floor(results[4] / 65536)
+				greenSlider.value = Math.floor((results[4] % 65536) / 256)
+				blueSlider.value = results[4] % 256
+			}
 		}
 	}
 }
