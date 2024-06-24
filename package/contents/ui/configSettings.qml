@@ -22,21 +22,35 @@ import QtQuick.Controls as QQC2
 import QtQuick.Layouts
 import org.kde.kirigami as Kirigami
 import org.kde.kcmutils as KCM
+import com.efeciftci.yeelight as Yeelight
 
 KCM.SimpleKCM {
+    id: root
     property alias cfg_ipAddress: ipAddr.text
     property alias cfg_animSudden: animSudden.checked
     property alias cfg_animDuration: animDuration.value
+    property var bulbs: []
     
     Kirigami.FormLayout {
-        ColumnLayout {
+        RowLayout {
             Kirigami.FormData.label: i18n('IP address:')
             Kirigami.FormData.buddyFor: ipAddr
             QQC2.TextField {
                 id: ipAddr
             }
-            QQC2.Label {
-                text: 'IP address of the bulb'
+            Kirigami.ContextualHelpButton {
+                toolTipText: xi18nc('@info:description', 'IP address of the bulb. Can be filled in manually, or one can be selected via the list of bulbs displayed by the <interface>Scan Network</interface> button.')
+            }
+        }
+        
+        QQC2.Button {
+            id: networkScanButton
+            icon.name: 'search-symbolic'
+            text: i18n("Scan Network...")
+            
+            onClicked: {
+                root.bulbs = JSON.parse(bulbs.search())
+                discoveryDialog.open()
             }
         }
         
@@ -87,4 +101,39 @@ KCM.SimpleKCM {
             }
         }
     }
+    
+    Kirigami.OverlaySheet {
+        id: discoveryDialog    
+        title: i18n('Available Bulbs')
+        
+        ListView {
+            id: listView
+            implicitWidth: Kirigami.Units.gridUnit * 20
+            model: root.bulbs
+            delegate: QQC2.RadioDelegate {
+                topPadding: Kirigami.Units.smallSpacing * 2
+                bottomPadding: Kirigami.Units.smallSpacing * 2
+                implicitWidth: listView.width
+                text: `${modelData.addr} - ${modelData.id}`
+                
+                onClicked: {
+                    listView.currentIndex = index
+                }
+            }
+        }
+        
+        footer: QQC2.DialogButtonBox {
+            standardButtons: Kirigami.Dialog.Ok | Kirigami.Dialog.Cancel
+            onAccepted: {
+                var selectedIndex = listView.currentIndex;
+                if (selectedIndex >= 0) {
+                    var selectedItem = listView.model[selectedIndex];
+                    ipAddr.text = `${selectedItem.addr}`;
+                }
+                discoveryDialog.close()
+            }
+            onRejected: discoveryDialog.close()
+        }
+    }
+    Yeelight.BulbDiscovery { id: bulbs }
 }

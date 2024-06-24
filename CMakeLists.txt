@@ -17,6 +17,7 @@ add_definitions(-DTRANSLATION_DOMAIN=\"libyeelight\")
 
 set(yeelightplugin_SRCS
 	plugin/bulb.cpp
+	plugin/bulbdiscovery.cpp
 	plugin/yeelightplugin.cpp
 )
 

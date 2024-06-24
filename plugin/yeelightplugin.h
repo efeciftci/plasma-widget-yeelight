@@ -2,6 +2,7 @@
 #include <QQmlEngine>
 #include <QQmlExtensionPlugin>
 #include "bulb.h"
+#include "bulbdiscovery.h"
 
 class YeelightPlugin: public QQmlExtensionPlugin{
 	Q_OBJECT
