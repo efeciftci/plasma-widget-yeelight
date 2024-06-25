@@ -17,7 +17,7 @@
         "Icon": "redshift-status-on",
         "Id": "com.efeciftci.yeelight",
         "Name": "Yeelight Control",
-        "Version": "0.3",
+        "Version": "0.3-1",
         "Website": "https://github.com/efeciftci/plasma-widget-yeelight"
     },
     "X-Plasma-API-Minimum-Version": "6.0",

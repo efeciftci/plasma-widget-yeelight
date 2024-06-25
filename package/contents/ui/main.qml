@@ -363,6 +363,7 @@ PlasmoidItem {
 			width: parent.width - (Kirigami.Units.gridUnit * 4)
 			visible: Plasmoid.configuration.ipAddress == ''
 			text: i18n('No bulbs have been configured yet')
+			iconName: 'redshift-status-off'
 			
 			helpfulAction: QQC2.Action {
 				text: i18n('Configure')

@@ -29,7 +29,19 @@ KCM.SimpleKCM {
     property alias cfg_ipAddress: ipAddr.text
     property alias cfg_animSudden: animSudden.checked
     property alias cfg_animDuration: animDuration.value
-    property var bulbs: []
+    property var bulbList: []
+    
+    headerPaddingEnabled: false
+    header: ColumnLayout {
+        Kirigami.InlineMessage {
+            id: noBulbsNotification
+            Layout.fillWidth: true
+            position: Kirigami.InlineMessage.Position.Header
+            type: Kirigami.MessageType.Error
+            text: i18n('No bulbs have been found on the local network.')
+            visible: false
+        }
+    }
     
     Kirigami.FormLayout {
         RowLayout {
@@ -39,7 +51,7 @@ KCM.SimpleKCM {
                 id: ipAddr
             }
             Kirigami.ContextualHelpButton {
-                toolTipText: xi18nc('@info:description', 'IP address of the bulb. Can be filled in manually, or one can be selected via the list of bulbs displayed by the <interface>Scan Network</interface> button.')
+                toolTipText: xi18nc('@info:whatsthis', 'IP address of the bulb. Can be filled in manually, or one can be selected via the list of bulbs displayed by the <interface>Scan Network</interface> button.')
             }
         }
         
@@ -49,8 +61,13 @@ KCM.SimpleKCM {
             text: i18n("Scan Network...")
             
             onClicked: {
-                root.bulbs = JSON.parse(bulbs.search())
-                discoveryDialog.open()
+                root.bulbList = JSON.parse(bulbs.search())
+                if (root.bulbList.length > 0)
+                    discoveryDialog.open()
+                else {
+                    noBulbsNotification.visible = true
+                    warningTimer.running = true
+                }
             }
         }
         
@@ -104,12 +121,12 @@ KCM.SimpleKCM {
     
     Kirigami.OverlaySheet {
         id: discoveryDialog    
-        title: i18n('Available Bulbs')
+        title: i18n('Discovered Bulbs')
         
         ListView {
             id: listView
             implicitWidth: Kirigami.Units.gridUnit * 20
-            model: root.bulbs
+            model: root.bulbList
             delegate: QQC2.RadioDelegate {
                 topPadding: Kirigami.Units.smallSpacing * 2
                 bottomPadding: Kirigami.Units.smallSpacing * 2
@@ -135,5 +152,16 @@ KCM.SimpleKCM {
             onRejected: discoveryDialog.close()
         }
     }
+    
     Yeelight.BulbDiscovery { id: bulbs }
+    
+    Timer {
+        id: warningTimer
+        interval: 5000
+        running: false
+        repeat: false
+        onTriggered: {
+            noBulbsNotification.visible = false
+        }
+    }
 }
