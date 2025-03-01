@@ -22,6 +22,7 @@ import QtQuick.Controls as QQC2
 import QtQuick.Layouts
 import QtQuick.Templates as Templates
 import org.kde.kirigami as Kirigami
+import org.kde.plasma.core as PlasmaCore
 import org.kde.plasma.components as PlasmaComponents
 import org.kde.plasma.extras as PlasmaExtras
 import org.kde.plasma.plasmoid
@@ -34,6 +35,7 @@ PlasmoidItem {
 	property int rgbVal: 0
 	
 	Plasmoid.icon: bulbOn ? 'redshift-status-on' : 'redshift-status-off'
+	Plasmoid.status: Plasmoid.configuration.ipAddress == '' ? PlasmaCore.Types.PassiveStatus : PlasmaCore.Types.ActiveStatus
 	
 	toolTipMainText: i18n('Yeelight Control')
 	toolTipSubText: {
